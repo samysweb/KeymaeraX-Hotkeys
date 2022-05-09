@@ -59,6 +59,7 @@ function formula_action(e,formula, action) {
 
 function perform_action(e,sequence){
 	ante = sequence.match(/(-{0,1}\d+)(.*)+/);
+	console.log(ante)
 	if (ante != null) {
 		formula_action(e,document.getElementById(ante[1]),ante[2]);
 	} else {
@@ -84,15 +85,30 @@ function setFocus(buttonId, inputName) {
 		document.getElementsByName(inputName)[0].focus();
 	},300);
 }
-document.onkeypress=function(e){
+document.onkeydown=function(e){
 	if (document.activeElement.tagName != "INPUT") {
-		curkey = String.fromCharCode(e.keyCode);
-		if (curkey=='\r'){
-			perform_action(e,document.hotkeystate.cur_sequence);
-			document.hotkeystate.cur_sequence="";
-		} else {
-			document.hotkeystate.cur_sequence+=curkey;
+		if (e.altKey) {
+			if(e.keyCode!=18 /*alt*/ && e.keyCode!=16 /*shift*/){
+				curkey = String.fromCharCode(e.keyCode);
+				num = curkey.match(/\d/);
+				if (num != null && document.hotkeystate.cur_sequence.length==0 && e.shiftKey) {
+					console.log("Adding -")
+					document.hotkeystate.cur_sequence = "-";
+				}
+				console.log("Adding "+curkey+" to sequence");
+				document.hotkeystate.cur_sequence += curkey.toLowerCase();
+			}
+			e.preventDefault();
 		}
+	}
+}
+document.onkeyup = function(e) {
+	if (e.keyCode==18 /*alt*/) {
+		actionCode = document.hotkeystate.cur_sequence
+		console.log("Executing sequence "+actionCode);
+		document.hotkeystate.cur_sequence="";
+		perform_action(e,actionCode);
+		
 	}
 }
 })()
