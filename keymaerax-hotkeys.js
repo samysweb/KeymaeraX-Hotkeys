@@ -14,7 +14,15 @@ document.hotkeystate={
 		"s" : function(e,f,scope){scope.onTactic(scope.f.id,'simplify')}, /*simplify*/
 		"c" : function(e,f,scope){scope.onTactic(scope.f.id,'chase')}, /*simplify*/
 		"x" : function(e,f,scope){f.getElementsByTagName("ul")[0].getElementsByTagName("a")[2].click()}, /*copy*/
-		"a" : function(e,f,scope){scope.onTactic(scope.f.id,'andL')}, /*simplify*/
+		"a" : function(e,f,scope){
+			if (scope.f.id <0 ){scope.onTactic(scope.f.id,'andL')} else {scope.onTactic(scope.f.id,'andR')}
+		},
+		"o" : function(e,f,scope){
+			if (scope.f.id <0 ){scope.onTactic(scope.f.id,'orL')} else {scope.onTactic(scope.f.id,'orR')}
+		},
+		"i" : function(e,f,scope){
+			if (scope.f.id <0 ){scope.onTactic(scope.f.id,'implyL')} else {scope.onTactic(scope.f.id,'implyR')}
+		}
 		/*"e" : function(e,f,scope){scope.setFormulaMode('edit');}, edit*/
 	},
 	/*
@@ -182,7 +190,7 @@ function setFocus(buttonId, inputName) {
 }
 document.onkeydown=function(e){
 	console.log("Caught key")
-	if (document.activeElement.tagName != "INPUT") {
+	if (document.activeElement.tagName != "INPUT" && document.activeElement.tagName != "TEXTAREA") {
 		if (e.keyCode>=37 && e.keyCode<=40) { // Arrows
 			console.log("Caught arrow key");
 			angular.element(document.getElementsByTagName("k4-sequent")[0]).scope().$apply(
